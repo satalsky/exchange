@@ -1,61 +1,66 @@
 import React from 'react';
 import './Form.scss';
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 
-const normalizeAsset = asset => {
+const normalizeAsset = (asset) => {
     if ('asset' in asset) {
         return {
             id: asset.id,
             icon: asset.asset.icon,
             name: asset.asset.name,
             currency: asset.asset.currency,
-            placeholder: `Мин. ${asset.minimal}`
-        }
+            placeholder: `Мин. ${asset.minimal}`,
+        };
     } else {
         return {
             id: asset.id,
             icon: asset.icon,
             name: asset.name,
             currency: asset.currency,
-            placeholder: `Резерв: ${asset.capital}`
-        }
+            placeholder: `Резерв: ${asset.capital}`,
+        };
     }
-}
+};
 
-const FormInput = props => {
+const FormInput = (props) => {
     const { exchange, handler, text } = props;
 
-    let asset = normalizeAsset(exchange)
+    let asset = normalizeAsset(exchange);
 
     return (
         <div className="form-left col-6">
             <div className="form-wrapper pl pr">
-                <input value={text} onChange={(e) => handler(e)} type="text" placeholder={asset.placeholder}/>
+                <input
+                    value={text}
+                    onChange={(e) => handler(e)}
+                    type="text"
+                    placeholder={asset.placeholder}
+                />
                 <div className="form-wrapper__currency">
                     <span>{asset.currency}</span>
                 </div>
             </div>
         </div>
     );
-}
+};
 
-const FormButton = props => {
+const FormButton = (props) => {
     const { exchange, assets } = props;
     const dispatch = useDispatch();
     let onClickButton;
 
     if ('asset' in exchange) {
-        onClickButton = asset => {
-            dispatch({type: "SET_FROM", payload: assets.find(x => x.id === asset.id)})
+        onClickButton = (asset) => {
+            dispatch({ type: 'SET_FROM', payload: assets.find((x) => x.id === asset.id) });
             setIsActive(false);
-        }
+        };
     } else {
-        onClickButton = asset => {
-            dispatch({type: "SET_TO", payload: assets.find(x => x.id === asset.id)})
+        onClickButton = (asset) => {
+            dispatch({ type: 'SET_TO', payload: assets.find((x) => x.id === asset.id) });
             setIsActive(false);
-        }
+        };
     }
-    let currentAsset = normalizeAsset(exchange)
+    let currentAsset = normalizeAsset(exchange);
 
     const dropdownRef = React.useRef(null);
     const [isActive, setIsActive] = React.useState(false);
@@ -72,26 +77,38 @@ const FormButton = props => {
                     <span>{currentAsset.name}</span>
                 </div>
                 <div className="form-wrapper__arrow">
-                    <svg width="17" height="10" viewBox="0 0 17 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1.056 8.5 9 16 1" stroke="#E23F65" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg
+                        width="17"
+                        height="10"
+                        viewBox="0 0 17 10"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M1 1.056 8.5 9 16 1"
+                            stroke="#E23F65"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
                     </svg>
                 </div>
             </div>
             <div ref={dropdownRef} className={`menu ${isActive ? 'active' : 'inactive'}`}>
-                <ul>{ assets.map((asset) => {
+                <ul>
+                    {assets.map((asset) => {
                         asset = normalizeAsset(asset);
                         return (
                             <li key={asset.id} onClick={() => onClickButton(asset)}>
-                                <img src={asset.icon} alt=""/>
+                                <img src={asset.icon} alt="" />
                                 <p>{asset.name}</p>
                             </li>
                         );
-                }) }
+                    })}
                 </ul>
             </div>
         </div>
     );
-}
+};
 
 const Form = () => {
     const [giveInputText, setGiveInputText] = React.useState('');
@@ -101,10 +118,10 @@ const Form = () => {
         setGiveInputText(text);
     };
 
-    const cryptoAssets = useSelector(state => state.assets.cryptoAssets)
-    const fiat = useSelector(state => state.assets.fiatAssets)
-    const fromExchange = useSelector(state => state.exchange.from)
-    const toExchange = useSelector(state => state.exchange.to)
+    const cryptoAssets = useSelector((state) => state.assets.cryptoAssets);
+    const fiat = useSelector((state) => state.assets.fiatAssets);
+    const fromExchange = useSelector((state) => state.exchange.from);
+    const toExchange = useSelector((state) => state.exchange.to);
 
     return (
         <div className="form">
@@ -116,7 +133,11 @@ const Form = () => {
 
                     {/* ========== Form Give ========== */}
                     <div className="form-box form-give mb-2">
-                        <FormInput exchange={fromExchange} handler={giveHandler} text={giveInputText} />
+                        <FormInput
+                            exchange={fromExchange}
+                            handler={giveHandler}
+                            text={giveInputText}
+                        />
 
                         <FormButton exchange={fromExchange} assets={cryptoAssets} />
                     </div>
