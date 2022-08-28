@@ -1,5 +1,4 @@
 import React from 'react';
-import AssetsService from './axios';
 import './Form.scss';
 import {useDispatch, useSelector} from "react-redux";
 
@@ -24,15 +23,14 @@ const normalizeAsset = asset => {
 }
 
 const FormInput = props => {
-    let placeholder, currency;
-    const { exchange, handler } = props;
+    const { exchange, handler, text } = props;
 
     let asset = normalizeAsset(exchange)
 
     return (
         <div className="form-left col-6">
             <div className="form-wrapper pl pr">
-                <input onChange={(e) => handler(e)} type="text" placeholder={asset.placeholder}/>
+                <input value={text} onChange={(e) => handler(e)} type="text" placeholder={asset.placeholder}/>
                 <div className="form-wrapper__currency">
                     <span>{asset.currency}</span>
                 </div>
@@ -44,7 +42,7 @@ const FormInput = props => {
 const FormButton = props => {
     const { exchange, assets } = props;
     const dispatch = useDispatch();
-    let icon, name, onClickButton;
+    let onClickButton;
 
     if ('asset' in exchange) {
         onClickButton = asset => {
@@ -96,37 +94,17 @@ const FormButton = props => {
 }
 
 const Form = () => {
-    const [giveBtn, setGiveBtn] = React.useState('');
+    const [giveInputText, setGiveInputText] = React.useState('');
 
     const giveHandler = (e) => {
         let text = e.target.value.replace(/\D/g, '');
-        setGiveBtn(text);
-    };
-
-    // First dropdown
-
-    const dropdownRef = React.useRef(null);
-    const [isActive, setIsActive] = React.useState(false);
-    const onClick = (e) => {
-        e.preventDefault();
-        setIsActive(!isActive);
-    };
-
-    // Second dropdown
-
-    const dropdownRefFiat = React.useRef(null);
-    const [isActiveFiat, setIsActiveFiat] = React.useState(false);
-    const onClickFiat = (e) => {
-        e.preventDefault();
-        setIsActiveFiat(!isActiveFiat);
+        setGiveInputText(text);
     };
 
     const cryptoAssets = useSelector(state => state.assets.cryptoAssets)
     const fiat = useSelector(state => state.assets.fiatAssets)
     const fromExchange = useSelector(state => state.exchange.from)
     const toExchange = useSelector(state => state.exchange.to)
-
-    const dispatch = useDispatch();
 
     return (
         <div className="form">
@@ -138,7 +116,7 @@ const Form = () => {
 
                     {/* ========== Form Give ========== */}
                     <div className="form-box form-give mb-2">
-                        <FormInput exchange={fromExchange} handler={giveHandler} />
+                        <FormInput exchange={fromExchange} handler={giveHandler} text={giveInputText} />
 
                         <FormButton exchange={fromExchange} assets={cryptoAssets} />
                     </div>
