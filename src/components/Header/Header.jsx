@@ -14,7 +14,7 @@ const Header = () => {
                 <div className="headerNav">
                     <ul>
                         <li>
-                            <Link to="/faq">Вопросы и ответ</Link>
+                            <Link to="/faq">Вопросы и ответы</Link>
                         </li>
                         <li>
                             <Link to="/rules">Правила</Link>

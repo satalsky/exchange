@@ -17,7 +17,7 @@ const normalizeAsset = asset => {
             icon: asset.icon,
             name: asset.name,
             currency: asset.currency,
-            placeholder: `Резерв: ${asset.capital} ${asset.currency}`
+            placeholder: `Резерв: ${asset.capital}`
         }
     }
 }
@@ -97,7 +97,7 @@ const Form = () => {
     const [giveInputText, setGiveInputText] = React.useState('');
 
     const giveHandler = (e) => {
-        let text = e.target.value.replace(/\D/g, '');
+        let text = e.target.value.replace(/\D.\D/g, '');
         setGiveInputText(text);
     };
 
